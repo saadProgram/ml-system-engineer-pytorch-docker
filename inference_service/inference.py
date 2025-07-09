@@ -28,5 +28,5 @@ def inference(images: List[Image.Image]) -> List[int]:
     return preds
 
 if __name__ == "__main__":
-    image = Image.open("./examples/cat.jpg")
+    image = Image.open("Images/cat.jpg")
     print(inference([image]))
