@@ -1,0 +1,6 @@
+torch
+torchvision
+grpcio
+grpcio-tools
+pillow
+opencv-python
