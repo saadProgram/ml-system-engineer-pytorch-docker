@@ -22,11 +22,13 @@ model = resnet34(weights=ResNet34_Weights.IMAGENET1K_V1).eval()
 
 @torch.no_grad()
 def inference(images: List[Image.Image]) -> List[int]:
+    if not images:
+        return []
     batch = torch.stack([preprocess(image) for image in images])
     logits = model(batch)
     preds = logits.argmax(dim=1).tolist()
     return preds
 
 if __name__ == "__main__":
-    image = Image.open("./examples/cat.jpg")
+    image = Image.open("Images/cat.jpg")
     print(inference([image]))
