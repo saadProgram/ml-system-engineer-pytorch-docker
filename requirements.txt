@@ -4,3 +4,4 @@ grpcio
 grpcio-tools
 pillow
 opencv-python
+kafka-python
