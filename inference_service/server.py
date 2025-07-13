@@ -6,10 +6,22 @@ from PIL import Image
 from io import BytesIO
 from inference import inference
 import logging
+import os
 from inference_pb2_grpc import InferenceServer, add_InferenceServerServicer_to_server
 from inference_pb2 import InferenceRequest, InferenceReply
 
-logging.basicConfig(level=logging.INFO)
+# Create logs directory
+os.makedirs('logs', exist_ok=True)
+
+# Configure logging to both file and console
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('logs/inference.log'),
+        logging.StreamHandler()
+    ]
+)
 
 
 class InferenceService(InferenceServer):
