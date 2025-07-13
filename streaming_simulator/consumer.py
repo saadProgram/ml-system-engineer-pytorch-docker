@@ -17,10 +17,11 @@ from pprint import pformat
 logging.basicConfig(level=logging.INFO)
 
 class PerformanceTracker:
-    def __init__(self):
+    def __init__(self, duration=None):
         self.start_time = time.time()
         self.frame_count = 0
         self.total_inference_time = 0
+        self.duration = duration  # None for endless
         
     def log_frame(self, inference_time, predictions):
         self.frame_count += 1
@@ -32,8 +33,8 @@ class PerformanceTracker:
         
         logging.info(f"Frame {self.frame_count}: {inference_time*1000:.2f}ms | Pred: {predictions} | FPS: {fps:.2f} | Avg latency: {avg_latency:.2f}ms")
         
-        # Print summary after 30 seconds
-        if elapsed >= 30:
+        # Print summary after duration (if set)
+        if self.duration and elapsed >= self.duration:
             self.print_summary()
             return True
         return False
@@ -44,7 +45,7 @@ class PerformanceTracker:
         avg_latency = self.total_inference_time / self.frame_count * 1000
         
         print("\n" + "="*50)
-        print("30-SECOND PERFORMANCE SUMMARY")
+        print(f"{self.duration or 'Endless'}-SECOND PERFORMANCE SUMMARY")
         print("="*50)
         print(f"Total frames processed: {self.frame_count}")
         print(f"Average throughput: {avg_fps:.2f} FPS")
@@ -62,7 +63,7 @@ async def process_frame(frame_bytes):
         inference_time = time.perf_counter() - start
         return res.pred, inference_time
 
-def video_consumer():
+def video_consumer(duration=None):
     consumer = KafkaConsumer(
         'video_frames',
         bootstrap_servers=['localhost:9092'],
@@ -70,7 +71,7 @@ def video_consumer():
         auto_offset_reset='earliest'
     )
     
-    tracker = PerformanceTracker()
+    tracker = PerformanceTracker(duration)
     
     logging.info("Consumer started, waiting for frames...")
     
@@ -93,4 +94,11 @@ def video_consumer():
         consumer.close()
 
 if __name__ == "__main__":
-    video_consumer()
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Video frame consumer')
+    parser.add_argument('--duration', type=int, help='Duration in seconds (default: endless)')
+    args = parser.parse_args()
+    
+    duration = args.duration
+    video_consumer(duration)
