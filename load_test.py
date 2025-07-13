@@ -15,11 +15,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'inference_service'))
 from inference_pb2 import InferenceRequest, InferenceReply
 from inference_pb2_grpc import InferenceServerStub
 
-# Load test image
-image = Image.open("inference_service/Images/cat.jpg")
-buffered = BytesIO()
-image.save(buffered, format="JPEG")
-image_bytes = buffered.getvalue()
+# Global variable for image bytes
+image_bytes = None
+
+def load_image(image_path):
+    """Load image and convert to bytes"""
+    global image_bytes
+    image = Image.open(image_path)
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    image_bytes = buffered.getvalue()
 
 async def send_request():
     """Send single gRPC request and measure time"""
@@ -93,8 +98,10 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description='Load test gRPC inference endpoint')
+    parser.add_argument('image_path', help='Path to test image')
     parser.add_argument('--requests', type=int, default=50, help='Number of requests')
     parser.add_argument('--concurrency', type=int, default=10, help='Concurrent requests')
     args = parser.parse_args()
     
+    load_image(args.image_path)
     asyncio.run(load_test(args.requests, args.concurrency))

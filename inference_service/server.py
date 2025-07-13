@@ -39,6 +39,11 @@ class InferenceService(InferenceServer):
 
 
 async def serve():
+    # Log device info at server startup
+    import torch
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    logging.info(f"Using device: {device}")
+    
     server = grpc.aio.server()
     add_InferenceServerServicer_to_server(InferenceService(), server)
     # using ip v6

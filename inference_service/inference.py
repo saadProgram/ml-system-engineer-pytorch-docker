@@ -20,7 +20,7 @@ preprocess = T.Compose(
 
 # Auto-detect GPU/CPU device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
+print(f"Using device: {device}", flush=True)
 
 model = resnet34(weights=ResNet34_Weights.IMAGENET1K_V1).eval()
 model = torch.jit.script(model)  # TorchScript optimization
