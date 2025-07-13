@@ -18,13 +18,20 @@ preprocess = T.Compose(
     ]
 )
 
+# Auto-detect GPU/CPU device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
 model = resnet34(weights=ResNet34_Weights.IMAGENET1K_V1).eval()
+model = torch.jit.script(model)  # TorchScript optimization
+model = model.to(device)  # Move model to GPU/CPU
 
 @torch.no_grad()
 def inference(images: List[Image.Image]) -> List[int]:
     if not images:
         return []
     batch = torch.stack([preprocess(image) for image in images])
+    batch = batch.to(device)  # Move batch to GPU/CPU
     logits = model(batch)
     preds = logits.argmax(dim=1).tolist()
     return preds

@@ -3,5 +3,5 @@ torchvision
 grpcio
 grpcio-tools
 pillow
-opencv-python
+opencv-python-headless
 kafka-python
