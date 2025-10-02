@@ -1,6 +1,6 @@
-# ML System Engineer - PyTorch Docker Inference Service
+#  Image Clissification Inference Service
 
-A high-performance PyTorch image classification service with gRPC API, Docker containerization, and Redpanda streaming pipeline.
+A high-performance PyTorch image classification service with gRPC API, Docker containerization, and Redpanda streaming pipeline. 
 
 ## Features
 
@@ -249,3 +249,5 @@ python -m grpc_tools.protoc --python_out=. --grpc_python_out=. inference.proto
 2. Rebuild Docker image
 3. Test with `load_test.py`
 
+
+(Followed Medium Blogs)
