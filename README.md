@@ -249,5 +249,6 @@ python -m grpc_tools.protoc --python_out=. --grpc_python_out=. inference.proto
 2. Rebuild Docker image
 3. Test with `load_test.py`
 
-
-(Followed Medium Blogs)
+Credits:
+Thanks to:
+https://medium.com/@chaisarfati/transform-your-microservice-architecture-with-grpc-b76c88f2b5a9
